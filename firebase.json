@@ -1,0 +1,51 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "destination": "https://backend-phi-smoky.vercel.app/api/**"
+      },
+      {
+        "source": "/backend-api.js",
+        "destination": "/backend-api.js"
+      },
+      {
+        "source": "/assets/**",
+        "destination": "/assets/**"
+      },
+      {
+        "source": "**/*.js",
+        "destination": "**/*.js"
+      },
+      {
+        "source": "**/*.css",
+        "destination": "**/*.css"
+      },
+      {
+        "source": "**/*.png",
+        "destination": "**/*.png"
+      },
+      {
+        "source": "**/*.jpg",
+        "destination": "**/*.jpg"
+      },
+      {
+        "source": "**/*.ico",
+        "destination": "**/*.ico"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}
