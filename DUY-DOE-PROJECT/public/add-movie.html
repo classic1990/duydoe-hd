@@ -10,13 +10,16 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        crossorigin="anonymous">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/assets/css/style-unified.css">
+    <link rel="stylesheet" href="./assets/css/style-unified.css">
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
@@ -26,8 +29,8 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="/assets/js/core/firebase-config.js" as="script">
-    <link rel="preload" href="/assets/js/add-movie.js" as="script">
+    <link rel="preload" href="./assets/js/core/firebase-config.js" as="script">
+    <link rel="preload" href="./assets/js/add-movie.js" as="script">
 </head>
 
 <body class="add-movie-page">
@@ -90,16 +93,18 @@
                             <i class="fas fa-info-circle"></i>
                             ข้อมูลพื้นฐาน
                         </h2>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="title">ชื่อหนัง *</label>
-                                <input type="text" class="form-input" id="title" name="title" required placeholder="กรอกชื่อหนัง">
+                                <input type="text" class="form-input" id="title" name="title" required
+                                    placeholder="กรอกชื่อหนัง">
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label" for="year">ปีที่ฉาย *</label>
-                                <input type="number" class="form-input" id="year" name="year" required min="1900" max="2030" placeholder="2024">
+                                <input type="number" class="form-input" id="year" name="year" required min="1900"
+                                    max="2030" placeholder="2024">
                             </div>
                         </div>
 
@@ -126,7 +131,7 @@
                                     <option value="western">คาวบอย</option>
                                 </select>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label" for="type">ประเภท *</label>
                                 <select class="form-select" id="type" name="type" required>
@@ -139,7 +144,8 @@
 
                         <div class="form-group">
                             <label class="form-label" for="description">คำอธิบาย</label>
-                            <textarea class="form-textarea" id="description" name="description" rows="4" placeholder="กรอกคำอธิบายหนัง..."></textarea>
+                            <textarea class="form-textarea" id="description" name="description" rows="4"
+                                placeholder="กรอกคำอธิบายหนัง..."></textarea>
                             <div class="char-count">
                                 <span id="descCharCount">0</span> / 2000 ตัวอักษร
                             </div>
@@ -148,9 +154,10 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="duration">ระยะเวลา (นาที)</label>
-                                <input type="number" class="form-input" id="duration" name="duration" min="1" placeholder="120">
+                                <input type="number" class="form-input" id="duration" name="duration" min="1"
+                                    placeholder="120">
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label" for="language">ภาษา</label>
                                 <select class="form-select" id="language" name="language">
@@ -171,11 +178,12 @@
                             <i class="fas fa-photo-video"></i>
                             ข้อมูลสื่อ
                         </h2>
-                        
+
                         <div class="form-group">
                             <label class="form-label" for="posterUrl">URL โปสเตอร์ *</label>
                             <div class="url-input-group">
-                                <input type="url" class="form-input" id="posterUrl" name="posterUrl" required placeholder="https://example.com/poster.jpg">
+                                <input type="url" class="form-input" id="posterUrl" name="posterUrl" required
+                                    placeholder="https://example.com/poster.jpg">
                                 <button type="button" class="btn-secondary" id="previewPosterBtn">
                                     <i class="fas fa-eye"></i>
                                     ดูตัวอย่าง
@@ -193,7 +201,8 @@
                         <div class="form-group">
                             <label class="form-label" for="videoUrl">URL วิดีโอ</label>
                             <div class="url-input-group">
-                                <input type="url" class="form-input" id="videoUrl" name="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+                                <input type="url" class="form-input" id="videoUrl" name="videoUrl"
+                                    placeholder="https://www.youtube.com/watch?v=...">
                                 <button type="button" class="btn-secondary" id="validateVideoBtn">
                                     <i class="fas fa-check-circle"></i>
                                     ตรวจสอบ
@@ -210,7 +219,8 @@
                         <div class="form-group">
                             <label class="form-label" for="trailerUrl">URL ตัวอย่าง (Trailer)</label>
                             <div class="url-input-group">
-                                <input type="url" class="form-input" id="trailerUrl" name="trailerUrl" placeholder="https://www.youtube.com/watch?v=...">
+                                <input type="url" class="form-input" id="trailerUrl" name="trailerUrl"
+                                    placeholder="https://www.youtube.com/watch?v=...">
                                 <button type="button" class="btn-secondary" id="validateTrailerBtn">
                                     <i class="fas fa-check-circle"></i>
                                     ตรวจสอบ
@@ -225,12 +235,13 @@
                             <i class="fas fa-star"></i>
                             คะแนนและคุณภาพ
                         </h2>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="rating">คะแนน (0-10)</label>
                                 <div class="rating-input-group">
-                                    <input type="number" class="form-input" id="rating" name="rating" min="0" max="10" step="0.1" placeholder="8.5">
+                                    <input type="number" class="form-input" id="rating" name="rating" min="0" max="10"
+                                        step="0.1" placeholder="8.5">
                                     <div class="rating-stars" id="ratingStars">
                                         <i class="far fa-star" data-rating="1"></i>
                                         <i class="far fa-star" data-rating="2"></i>
@@ -240,7 +251,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label class="form-label" for="quality">คุณภาพ</label>
                                 <select class="form-select" id="quality" name="quality">
@@ -254,7 +265,8 @@
 
                         <div class="form-group">
                             <label class="form-label" for="tags">แท็ก (คั่นด้วยคอมมา)</label>
-                            <input type="text" class="form-input" id="tags" name="tags" placeholder="แอคชัน, ผจญภัย, ไซไฟ">
+                            <input type="text" class="form-input" id="tags" name="tags"
+                                placeholder="แอคชัน, ผจญภัย, ไซไฟ">
                             <div class="tags-preview" id="tagsPreview">
                                 <!-- Tags will be shown here -->
                             </div>
@@ -267,20 +279,20 @@
                             <i class="fas fa-cog"></i>
                             ตัวเลือกเพิ่มเติม
                         </h2>
-                        
+
                         <div class="checkbox-group">
                             <label class="form-checkbox">
                                 <input type="checkbox" name="popular" id="popular">
                                 <span class="checkmark"></span>
                                 <span class="label-text">หนังยอดนิยม</span>
                             </label>
-                            
+
                             <label class="form-checkbox">
                                 <input type="checkbox" name="new" id="new">
                                 <span class="checkmark"></span>
                                 <span class="label-text">หนังใหม่</span>
                             </label>
-                            
+
                             <label class="form-checkbox">
                                 <input type="checkbox" name="featured" id="featured">
                                 <span class="checkmark"></span>
@@ -340,14 +352,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
 
     <!-- Firebase Config & App Logic -->
-    <script src="/assets/js/core/constants.js"></script>
-    <script src="/assets/js/core/utils.js"></script>
-    <script src="/assets/js/core/error-handler.js"></script>
-    <script src="/assets/js/core/security.js"></script>
-    <script src="/assets/js/core/firebase-config.js"></script>
+    <script src="./assets/js/core/constants.js"></script>
+    <script src="./assets/js/core/utils.js"></script>
+    <script src="./assets/js/core/error-handler.js"></script>
+    <script src="./assets/js/core/security.js"></script>
+    <script src="./assets/js/core/firebase-config.js"></script>
 
     <!-- Add Movie Script -->
-    <script src="/assets/js/add-movie.js"></script>
+    <script src="./assets/js/add-movie.js"></script>
 </body>
 
 </html>

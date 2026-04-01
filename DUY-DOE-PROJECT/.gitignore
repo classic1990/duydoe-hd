@@ -16,6 +16,9 @@ yarn.lock
 .env.development.local
 .env.test.local
 .env.production.local
+.env.example
+.env.production
+.env.development
 
 # Firebase Service Account Keys (CRITICAL!)
 service-account-key.json

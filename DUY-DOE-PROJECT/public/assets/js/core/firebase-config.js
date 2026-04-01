@@ -1,16 +1,43 @@
-// Firebase Configuration
+// Firebase Configuration - Secure Version
 const firebaseConfig = {
-    apiKey: window.FIREBASE_API_KEY || "AIzaSyBZz2QI4hb2FAVjhhNCP8rARVo_zlv7_KA",
-    authDomain: window.FIREBASE_AUTH_DOMAIN || "duydodeesport.firebaseapp.com",
-    projectId: window.FIREBASE_PROJECT_ID || "duydodeesport",
-    storageBucket: window.FIREBASE_STORAGE_BUCKET || "duydodeesport.firebasestorage.app",
-    messagingSenderId: window.FIREBASE_MESSAGING_SENDER_ID || "435929814225",
-    appId: window.FIREBASE_APP_ID || "1:435929814225:web:81e149cfb597513040e1f0",
-    measurementId: window.FIREBASE_MEASUREMENT_ID || "G-7EC2RQZH22"
+    apiKey: window.FIREBASE_API_KEY || (window.location.hostname === 'localhost' ?
+        "AIzaSyBZz2QI4hb2FAVjhhNCP8rARVo_zlv7_KA" : null),
+    authDomain: window.FIREBASE_AUTH_DOMAIN || (window.location.hostname === 'localhost' ?
+        "duydodeesport.firebaseapp.com" : null),
+    projectId: window.FIREBASE_PROJECT_ID || (window.location.hostname === 'localhost' ?
+        "duydodeesport" : null),
+    storageBucket: window.FIREBASE_STORAGE_BUCKET || (window.location.hostname === 'localhost' ?
+        "duydodeesport.firebasestorage.app" : null),
+    messagingSenderId: window.FIREBASE_MESSAGING_SENDER_ID || (window.location.hostname === 'localhost' ?
+        "435929814225" : null),
+    appId: window.FIREBASE_APP_ID || (window.location.hostname === 'localhost' ?
+        "1:435929814225:web:81e149cfb597513040e1f0" : null),
+    measurementId: window.FIREBASE_MEASUREMENT_ID || (window.location.hostname === 'localhost' ?
+        "G-7EC2RQZH22" : null)
 };
 
 // Check if we're in development mode
 const isDevelopment = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+// Security check for production
+if (!isDevelopment) {
+    // In production, check if environment variables are set
+    if (!window.FIREBASE_API_KEY || !window.FIREBASE_PROJECT_ID) {
+        console.error("🚨 Security Alert: Firebase configuration not found in production");
+        console.error("🔧 Please set environment variables: FIREBASE_API_KEY, FIREBASE_PROJECT_ID");
+        // Show user-friendly error message
+        document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Kanit', sans-serif; background: #141414; color: white; text-align: center; padding: 2rem;">
+                <div>
+                    <h1 style="color: #e50914; margin-bottom: 1rem;">🚨 Configuration Error</h1>
+                    <p style="margin-bottom: 1rem;">Server configuration is incomplete.</p>
+                    <p style="color: #b3b3b3; font-size: 0.9rem;">Please contact administrator.</p>
+                </div>
+            </div>
+        `;
+        throw new Error("Firebase configuration not found in production");
+    }
+}
 
 // Initialize Firebase variables
 let app, db, auth, analytics, functions, performance;
