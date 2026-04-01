@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Connection Status</title>
+    <link rel="stylesheet" href="/assets/css/style-unified.css">
+    <style>
+        .status-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .status-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .status-card {
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-primary);
+            text-align: center;
+            transition: all var(--transition-bounce);
+        }
+        
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .status-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-success {
+            color: var(--brand-success);
+        }
+        
+        .status-error {
+            color: var(--brand-error);
+        }
+        
+        .status-warning {
+            color: var(--brand-warning);
+        }
+        
+        .status-info {
+            color: var(--brand-secondary);
+        }
+        
+        .status-title {
+            font-size: var(--font-lg);
+            font-weight: var(--font-semibold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-description {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+        
+        .error-details {
+            background: var(--bg-quaternary);
+            border: 1px solid var(--border-error);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: var(--font-xs);
+            color: var(--text-error);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .fix-button {
+            background: var(--brand-primary);
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            margin: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .fix-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        <div class="status-header">
+            <h1>🔍 Database Connection Status</h1>
+            <p>ตรวจสอบสถานะการเชื่อมต่อกับฐานข้อมูล</p>
+        </div>
+        
+        <div class="status-grid" id="statusGrid">
+            <!-- Status cards will be inserted here -->
+        </div>
+        
+        <div id="errorDetails" style="display: none;">
+            <h3>📋 รายละเอียดข้อผิดพลาด</h3>
+            <div class="error-details" id="errorContent"></div>
+        </div>
+        
+        <div id="fixActions" style="display: none;">
+            <h3>🔧 วิธีแก้ไข</h3>
+            <div id="fixContent"></div>
+        </div>
+        
+        <div id="testResults" style="display: none;">
+            <h3>📊 ผลการทดสอบ</h3>
+            <div id="testContent"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="/assets/js/core/firebase-config.js"></script>
+
+    <script>
+        // Database connection status
+        const connectionStatus = {
+            firebaseSDK: { status: 'unknown', message: 'กำลังตรวจสอบ...' },
+            firebaseApp: { status: 'unknown', message: 'กำลังตรวจสอบ...' },
+            firestoreDB: { status: 'unknown', message: 'กำลังตรวจสอบ...' },
+            moviesCollection: { status: 'unknown', message: 'กำลังตรวจสอบ...' },
+            backendAPI: { status: 'unknown', message: 'กำลังตรวจสอบ...' }
+        };
+
+        // Update status display
+        function updateStatusDisplay() {
+            const statusGrid = document.getElementById('statusGrid');
+            let html = '';
+            
+            for (const [key, status] of Object.entries(connectionStatus)) {
+                const iconClass = status.status === 'success' ? 'status-success' : 
+                                status.status === 'error' ? 'status-error' : 
+                                status.status === 'warning' ? 'status-warning' : 'status-info';
+                
+                const icon = status.status === 'success' ? '✅' : 
+                           status.status === 'error' ? '❌' : 
+                           status.status === 'warning' ? '⚠️' : '🔄';
+                
+                const title = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                
+                html += `
+                    <div class="status-card">
+                        <div class="status-icon ${iconClass}">${icon}</div>
+                        <div class="status-title">${title}</div>
+                        <div class="status-description">${status.message}</div>
+                    </div>
+                `;
+            }
+            
+            statusGrid.innerHTML = html;
+        }
+
+        // Test Firebase SDK
+        function testFirebaseSDK() {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    connectionStatus.firebaseSDK = {
+                        status: 'success',
+                        message: 'Firebase SDK โหลดสำเร็จ'
+                    };
+                } else {
+                    throw new Error('Firebase SDK ไม่พบ');
+                }
+            } catch (error) {
+                connectionStatus.firebaseSDK = {
+                    status: 'error',
+                    message: 'Firebase SDK ไม่สามารถโหลดได้',
+                    error: error.message
+                };
+            }
+            updateStatusDisplay();
+        }
+
+        // Test Firebase App
+        function testFirebaseApp() {
+            try {
+                if (window.firebaseApp) {
+                    connectionStatus.firebaseApp = {
+                        status: 'success',
+                        message: `Firebase App: ${window.firebaseApp.name}`
+                    };
+                } else {
+                    throw new Error('Firebase App ไม่พบ');
+                }
+            } catch (error) {
+                connectionStatus.firebaseApp = {
+                    status: 'error',
+                    message: 'Firebase App ไม่สามารถเริ่มต้นได้',
+                    error: error.message
+                };
+            }
+            updateStatusDisplay();
+        }
+
+        // Test Firestore Database
+        function testFirestoreDB() {
+            try {
+                if (window.firebaseDB) {
+                    connectionStatus.firestoreDB = {
+                        status: 'success',
+                        message: 'Firestore Database เชื่อมต่อสำเร็จ'
+                    };
+                } else {
+                    throw new Error('Firestore Database ไม่พบ');
+                }
+            } catch (error) {
+                connectionStatus.firestoreDB = {
+                    status: 'error',
+                    message: 'Firestore Database ไม่สามารถเชื่อมต่อได้',
+                    error: error.message
+                };
+            }
+            updateStatusDisplay();
+        }
+
+        // Test Movies Collection
+        async function testMoviesCollection() {
+            try {
+                if (!window.firebaseDB) {
+                    throw new Error('Firestore Database ไม่พบ');
+                }
+                
+                const snapshot = await window.moviesCollection().limit(1).get();
+                connectionStatus.moviesCollection = {
+                    status: 'success',
+                    message: `Movies Collection: ${snapshot.size} documents`
+                };
+            } catch (error) {
+                connectionStatus.moviesCollection = {
+                    status: 'error',
+                    message: 'Movies Collection ไม่สามารถเข้าถึงได้',
+                    error: error.message
+                };
+            }
+            updateStatusDisplay();
+        }
+
+        // Test Backend API
+        async function testBackendAPI() {
+            try {
+                const response = await fetch('/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    connectionStatus.backendAPI = {
+                        status: 'success',
+                        message: `Backend API: ${data.status}`
+                    };
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                connectionStatus.backendAPI = {
+                    status: 'error',
+                    message: 'Backend API ไม่สามารถเชื่อมต่อได้',
+                    error: error.message
+                };
+            }
+            updateStatusDisplay();
+        }
+
+        // Show error details
+        function showErrorDetails() {
+            const errorDetails = document.getElementById('errorDetails');
+            const errorContent = document.getElementById('errorContent');
+            const fixActions = document.getElementById('fixActions');
+            const fixContent = document.getElementById('fixContent');
+            
+            let hasErrors = false;
+            let errorHtml = '';
+            let fixHtml = '';
+            
+            for (const [key, status] of Object.entries(connectionStatus)) {
+                if (status.status === 'error') {
+                    hasErrors = true;
+                    errorHtml += `<strong>${key}:</strong> ${status.message}\n`;
+                    errorHtml += `Error: ${status.error}\n\n`;
+                    
+                    // Add fix suggestions
+                    if (key === 'firebaseSDK') {
+                        fixHtml += `
+                            <div class="fix-suggestion">
+                                <h4>🔧 แก้ไข Firebase SDK:</h4>
+                                <p>ตรวจสอบว่า Firebase SDK ถูกโหลดใน HTML</p>
+                                <a href="/database-test.html" class="fix-button">ทดสอบอีกครั้ง</a>
+                            </div>
+                        `;
+                    } else if (key === 'firebaseApp') {
+                        fixHtml += `
+                            <div class="fix-suggestion">
+                                <h4>🔧 แก้ไข Firebase App:</h4>
+                                <p>ตรวจสอบ Firebase configuration</p>
+                                <a href="/database-test.html" class="fix-button">ทดสอบอีกครั้ง</a>
+                            </div>
+                        `;
+                    } else if (key === 'firestoreDB') {
+                        fixHtml += `
+                            <div class="fix-suggestion">
+                                <h4>🔧 แก้ไข Firestore Database:</h4>
+                                <p>ตรวจสอบ Firebase project settings และ permissions</p>
+                                <a href="https://console.firebase.google.com/" target="_blank" class="fix-button">ไปที่ Firebase Console</a>
+                            </div>
+                        `;
+                    } else if (key === 'moviesCollection') {
+                        fixHtml += `
+                            <div class="fix-suggestion">
+                                <h4>🔧 แก้ไข Movies Collection:</h4>
+                                <p>ตรวจสอบว่ามี collection ใน Firestore</p>
+                                <a href="https://console.firebase.google.com/" target="_blank" class="fix-button">ไปที่ Firebase Console</a>
+                            </div>
+                        `;
+                    } else if (key === 'backendAPI') {
+                        fixHtml += `
+                            <div class="fix-suggestion">
+                                <h4>🔧 แก้ไข Backend API:</h4>
+                                <p>ตรวจสอบว่า backend server ทำงานอยู่</p>
+                                <button class="fix-button" onclick="startBackend()">เริ่ม Backend Server</button>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            if (hasErrors) {
+                errorDetails.style.display = 'block';
+                errorContent.textContent = errorHtml;
+                fixActions.style.display = 'block';
+                fixContent.innerHTML = fixHtml;
+            }
+        }
+
+        // Start backend server
+        function startBackend() {
+            window.open('/backend-start.html', '_blank');
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            console.log('🔍 Running database connection tests...');
+            
+            // Test Firebase SDK
+            testFirebaseSDK();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Test Firebase App
+            testFirebaseApp();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Test Firestore Database
+            testFirestoreDB();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Test Movies Collection
+            await testMoviesCollection();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Test Backend API
+            await testBackendAPI();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Show error details if any
+            showErrorDetails();
+            
+            console.log('✅ Database connection tests completed');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatusDisplay();
+            
+            // Wait for Firebase to load
+            setTimeout(() => {
+                runAllTests();
+            }, 1000);
+        });
+
+        console.log('🔍 Database Connection Status loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Connection Test - DUY-DOE FILM</title>
+    <link rel="stylesheet" href="/assets/css/style-unified.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-primary);
+        }
+        
+        .test-result {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--radius-md);
+            font-family: monospace;
+            font-size: var(--font-sm);
+        }
+        
+        .test-success {
+            background: var(--brand-success);
+            color: white;
+        }
+        
+        .test-error {
+            background: var(--brand-error);
+            color: white;
+        }
+        
+        .test-warning {
+            background: var(--brand-warning);
+            color: white;
+        }
+        
+        .test-info {
+            background: var(--brand-secondary);
+            color: white;
+        }
+        
+        .test-button {
+            background: var(--brand-primary);
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            margin: 0.5rem;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-quaternary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+            background: var(--bg-quaternary);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: var(--font-2xl);
+            font-weight: var(--font-bold);
+            color: var(--brand-primary);
+        }
+        
+        .stat-label {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Database Connection Test</h1>
+        <p>ทดสอบการเชื่อมต่อกับฐานข้อมูล Firebase และ Backend Server</p>
+        
+        <!-- Firebase Connection Test -->
+        <div class="test-section">
+            <h2>🔥 Firebase Connection</h2>
+            <button class="test-button" onclick="testFirebaseConnection()">ทดสอบ Firebase Connection</button>
+            <div id="firebase-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Firestore Database Test -->
+        <div class="test-section">
+            <h2>📚 Firestore Database</h2>
+            <button class="test-button" onclick="testFirestoreConnection()">ทดสอบ Firestore Connection</button>
+            <div id="firestore-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Movies Collection Test -->
+        <div class="test-section">
+            <h2>🎬 Movies Collection</h2>
+            <button class="test-button" onclick="testMoviesCollection()">ทดสอบ Movies Collection</button>
+            <div id="movies-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Backend API Test -->
+        <div class="test-section">
+            <h2>🔧 Backend API</h2>
+            <button class="test-button" onclick="testBackendAPI()">ทดสอบ Backend API</button>
+            <div id="backend-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Real-time Test -->
+        <div class="section">
+            <h2>⚡ Real-time Connection</h2>
+            <button class="test-button" onclick="testRealtimeConnection()">ทดสอบ Real-time Updates</button>
+            <div id="realtime-result" class="test-result" style="display: none;"></div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="test-section">
+            <h2>📊 Connection Statistics</h2>
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="firebase-status">-</div>
+                    <div class="stat-label">Firebase Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="firestore-status">-</div>
+                    <div class="stat-label">Firestore Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="backend-status">-</div>
+                    <div class="stat-label">Backend Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="movies-count">-</div>
+                    <div class="stat-label">Movies Count</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Auto Test -->
+        <div class="test-section">
+            <h2>🤖️ Auto Test All</h2>
+            <button class="test-button" onclick="runAllTests()" style="background: var(--brand-accent);">ทดสอบทั้งหมด</button>
+            <div id="auto-result" class="test-result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-performance-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="/assets/js/core/firebase-config.js"></script>
+
+    <script>
+        // Test results storage
+        const testResults = {
+            firebase: null,
+            firestore: null,
+            movies: null,
+            backend: null,
+            realtime: null
+        };
+
+        // Show test result
+        function showResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            
+            let className = 'test-result ';
+            let content = '';
+            
+            if (result.success) {
+                className += 'test-success';
+                content = `✅ ${result.message}`;
+            } else if (result.warning) {
+                className += 'test-warning';
+                content = `⚠️ ${result.message}`;
+            } else if (result.error) {
+                className += 'test-error';
+                content = `❌ ${result.message}`;
+            } else {
+                className += 'test-info';
+                content = `ℹ️ ${result.message}`;
+            }
+            
+            element.className = className;
+            element.innerHTML = content;
+            
+            // Store result
+            const testType = elementId.replace('-result', '');
+            testResults[testType] = result;
+            
+            // Update stats
+            updateStats();
+        }
+
+        // Test Firebase Connection
+        async function testFirebaseConnection() {
+            const element = document.getElementById('firebase-result');
+            element.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                // Check if Firebase SDK is loaded
+                if (!window.firebase) {
+                    throw new Error('Firebase SDK not loaded');
+                }
+                
+                // Check if Firebase app is initialized
+                if (!window.firebaseApp) {
+                    throw new Error('Firebase app not initialized');
+                }
+                
+                // Test Firebase app info
+                const appInfo = {
+                    name: window.firebaseApp.name,
+                    options: window.firebaseApp.options
+                };
+                
+                // Test Firebase services
+                const services = [];
+                if (window.firebaseDB) services.push('Firestore');
+                if (window.firebaseAuth) services.push('Auth');
+                if (window.firebaseAnalytics) services.push('Analytics');
+                if (window.firebaseFunctions) services.push('Functions');
+                if (window.firebasePerformance) services.push('Performance');
+                
+                showResult('firebase-result', {
+                    success: true,
+                    message: `Firebase connected successfully! App: ${appInfo.name}, Services: ${services.join(', ')}`
+                });
+                
+            } catch (error) {
+                showResult('firebase-result', {
+                    error: true,
+                    message: `Firebase connection failed: ${error.message}`
+                });
+            }
+        }
+
+        // Test Firestore Connection
+        async function testFirestoreConnection() {
+            const element = document.getElementById('firestore-result');
+            element.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                if (!window.firebaseDB) {
+                    throw new Error('Firestore not initialized');
+                }
+                
+                // Test basic query
+                const testQuery = await window.firebaseDB.collection('test').limit(1).get();
+                
+                // Clean up test document
+                if (!testQuery.empty) {
+                    await testQuery.docs[0].ref.delete();
+                }
+                
+                showResult('firestore-result', {
+                    success: true,
+                    message: `Firestore connected successfully! Database: ${window.firebaseDB.app.name}`
+                });
+                
+            } catch (error) {
+                showResult('firestore-result', {
+                    error: true,
+                    message: `Firestore connection failed: ${error.message}`
+                });
+            }
+        }
+
+        // Test Movies Collection
+        async function testMoviesCollection() {
+            const element = document.getElementById('movies-result');
+            element.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                if (!window.firebaseDB) {
+                    throw new Error('Firestore not initialized');
+                }
+                
+                // Test movies collection
+                const moviesQuery = await window.moviesCollection().limit(5).get();
+                const movies = moviesQuery.docs.map(doc => ({
+                    id: doc.id,
+                    title: doc.data().title || 'No title'
+                }));
+                
+                showResult('movies-result', {
+                    success: true,
+                    message: `Movies collection accessible! Found ${movies.length} movies`
+                });
+                
+                // Update movies count
+                document.getElementById('movies-count').textContent = moviesQuery.size;
+                
+            } catch (error) {
+                showResult('movies-result', {
+                    error: true,
+                    message: `Movies collection test failed: ${error.message}`
+                });
+            }
+        }
+
+        // Test Backend API
+        async function testBackendAPI() {
+            const element = document.getElementById('backend-result');
+            element.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                // Test health endpoint
+                const response = await fetch('/health');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                showResult('backend-result', {
+                    success: true,
+                    message: `Backend API connected! Status: ${data.status}, Server: ${data.timestamp}`
+                });
+                
+            } catch (error) {
+                showResult('backend-result', {
+                    error: true,
+                    message: `Backend API test failed: ${error.message}`
+                });
+            }
+        }
+
+        // Test Real-time Connection
+        async function testRealtimeConnection() {
+            const element = document.getElementById('realtime-result');
+            element.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                if (!window.firebaseDB) {
+                    throw new Error('Firestore not initialized');
+                }
+                
+                // Set up real-time listener
+                const unsubscribe = window.moviesCollection().onSnapshot((snapshot) => {
+                    const count = snapshot.size;
+                    showResult('realtime-result', {
+                        success: true,
+                        message: `Real-time connection working! Currently ${count} movies in collection`
+                    });
+                    
+                    // Update movies count
+                    document.getElementById('movies-count').textContent = count;
+                    
+                    // Unsubscribe after first update
+                    unsubscribe();
+                });
+                
+                // Timeout after 5 seconds
+                setTimeout(() => {
+                    if (element.innerHTML.includes('loading')) {
+                        showResult('realtime-result', {
+                            warning: true,
+                            message: 'Real-time connection timeout - no updates received'
+                        });
+                    }
+                }, 5000);
+                
+            } catch (error) {
+                showResult('realtime-result', {
+                    error: true,
+                    message: `Real-time connection test failed: ${error.message}`
+                });
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            // Firebase status
+            const firebaseStatus = document.getElementById('firebase-status');
+            if (testResults.firebase) {
+                firebaseStatus.textContent = testResults.firebase.success ? '✅' : '❌';
+                firebaseStatus.style.color = testResults.firebase.success ? 'var(--brand-success)' : 'var(--brand-error)';
+            }
+            
+            // Firestore status
+            const firestoreStatus = document.getElementById('firestore-status');
+            if (testResults.firestore) {
+                firestoreStatus.textContent = testResults.firestore.success ? '✅' : '❌';
+                firestoreStatus.style.color = testResults.firestore.success ? 'var(--brand-success)' : 'var(--brand-error)';
+            }
+            
+            // Backend status
+            const backendStatus = document.getElementById('backend-status');
+            if (testResults.backend) {
+                backendStatus.textContent = testResults.backend.success ? '✅' : '❌';
+                backendStatus.style.color = testResults.backend.success ? 'var(--brand-success)' : 'var(--brand-error)';
+            }
+        }
+
+        // Run all tests
+        async function runAllTests() {
+            const element = document.getElementById('auto-result');
+            element.innerHTML = '<div class="loading"></div>';
+            
+            const tests = [
+                { name: 'Firebase Connection', fn: testFirebaseConnection },
+                { name: 'Firestore Connection', fn: testFirestoreConnection },
+                { name: 'Movies Collection', fn: testMoviesCollection },
+                { name: 'Backend API', fn: testBackendAPI },
+                { name: 'Real-time Connection', fn: testRealtimeConnection }
+            ];
+            
+            let results = [];
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                
+                try {
+                    await test.fn();
+                    results.push({ name: test.name, success: true });
+                } catch (error) {
+                    results.push({ name: test.name, success: false, error: error.message });
+                }
+                
+                // Small delay between tests
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            // Generate summary
+            const successCount = results.filter(r => r.success).length;
+            const errorCount = results.length - successCount;
+            
+            let summary = `📊 Test Results: ${successCount}/${results.length} passed`;
+            
+            if (errorCount > 0) {
+                summary += `\n❌ Failed tests: ${errorCount}`;
+                results.filter(r => !r.success).forEach(r => {
+                    summary += `\n- ${r.name}: ${r.error}`;
+                });
+            }
+            
+            const className = errorCount === 0 ? 'test-success' : 'test-warning';
+            element.className = `test-result ${className}`;
+            element.innerHTML = `<pre>${summary}</pre>`;
+            
+            // Update final stats
+            updateStats();
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                runAllTests();
+            }, 1000);
+        });
+
+        // Refresh stats every 5 seconds
+        setInterval(updateStats, 5000);
+
+        console.log('🔍 Database Connection Test loaded');
+    </script>
+</body>
+</html>

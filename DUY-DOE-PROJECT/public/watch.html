@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กำลังดูหนัง - DUYดูDEE</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/style-modern.css">
+    <link rel="stylesheet" href="/assets/css/style-unified.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+
+    <!-- Preload -->
+    <link rel="preload" href="/assets/js/watch-enhanced.js" as="script">
+</head>
+
+<body class="watch-page">
+
+    <!-- 🔴 HEADER -->
+    <header class="watch-header">
+        <div class="watch-header-content">
+            <a href="/" class="logo">
+                <i class="fas fa-film logo-icon"></i>
+                <div class="logo-content">
+                    <span class="logo-line main">DUYดูDEE</span>
+                    <span class="logo-line hd"> </span>
+                </div>
+            </a>
+
+            <div class="watch-header-actions">
+                <button id="shareBtn" class="header-btn">
+                    <i class="fas fa-share"></i> แชร์
+                </button>
+                <a href="/" class="header-btn">
+                    <i class="fas fa-home"></i> หน้าแรก
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🔴 MAIN WATCH CONTAINER -->
+    <main class="watch-main">
+        <div class="watch-container">
+
+            <!-- 🎬 VIDEO PLAYER SECTION -->
+            <section class="player-section">
+                <div class="video-container">
+                    <div id="videoPlayer" class="video-player">
+                        <div class="player-placeholder">
+                            <div class="loading-spinner"></div>
+                            <p>กำลังโหลดวิดีโอ...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 📄 MOVIE INFO SECTION -->
+            <section class="movie-info-section">
+                <div class="movie-info-container">
+
+                    <!-- TITLE AND META -->
+                    <div class="movie-header">
+                        <h1 id="movieTitle" class="movie-title">กำลังโหลด...</h1>
+
+                        <div class="movie-meta-info">
+                            <div class="meta-left">
+                                <span id="movieYear" class="meta-item">2024</span>
+                                <span id="movieCategory" class="meta-item category-tag">ทั่วไป</span>
+                                <span id="movieQuality" class="meta-item quality-tag">HD</span>
+                            </div>
+                            <div class="meta-right">
+                                <div class="view-count">
+                                    <i class="fas fa-eye"></i>
+                                    <span id="movieViews">0</span> วิว
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <div class="movie-description">
+                        <p id="movieDescription">กำลังโหลดรายละเอียด...</p>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div class="movie-actions">
+                        <button id="playNextBtn" class="action-btn primary">
+                            <i class="fas fa-play"></i> เล่นต่อไป
+                        </button>
+                        <button id="favoriteBtn" class="action-btn secondary">
+                            <i class="far fa-heart"></i> รายการโปรด
+                        </button>
+                        <button id="downloadBtn" class="action-btn secondary">
+                            <i class="fas fa-download"></i> ดาวน์โหลด
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- 🔥 RELATED MOVIES -->
+        <section class="related-movies-section">
+            <div class="related-container">
+                <div class="section-header">
+                    <h2 class="section-title">หนังที่เกี่ยวข้อง</h2>
+                    <div class="section-controls">
+                        <button class="control-btn" id="prevRelated">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="control-btn" id="nextRelated">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="related-movies-grid" id="relatedMovies">
+                    <!-- Related movies will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 🔴 FOOTER -->
+    <footer class="watch-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-film logo-icon"></i>
+                <div class="logo-content">
+                    <span class="logo-line main">DUYดูDEE</span>
+                    <span class="logo-line hd"> </span>
+                </div>
+            </div>
+            <p>&copy; 2026 DUYดูDEE - ดูหนังออนไลน์ 4K</p>
+        </div>
+    </footer>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script src="/assets/js/core/firebase-config.js"></script>
+
+    <!-- WATCH LOGIC -->
+    <script src="/assets/js/watch-enhanced.js"></script>
+
+</body>
+
+</html>

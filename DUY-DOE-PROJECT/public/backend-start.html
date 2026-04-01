@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Server Status</title>
+    <link rel="stylesheet" href="/assets/css/style-unified.css">
+    <style>
+        .status-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+        }
+        
+        .status-icon {
+            font-size: 4rem;
+            margin: 2rem 0;
+        }
+        
+        .status-success {
+            color: var(--brand-success);
+        }
+        
+        .status-error {
+            color: var(--brand-error);
+        }
+        
+        .status-warning {
+            color: var(--brand-warning);
+        }
+        
+        .command-box {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: var(--font-sm);
+        }
+        
+        .steps {
+            text-align: left;
+            margin: 2rem 0;
+        }
+        
+        .step {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg-quaternary);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--brand-primary);
+        }
+        
+        .step-number {
+            font-weight: bold;
+            color: var(--brand-primary);
+        }
+        
+        .refresh-button {
+            background: var(--brand-primary);
+            color: white;
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            font-weight: var(--font-medium);
+            cursor: pointer;
+            transition: all var(--transition-bounce);
+            margin: 0.5rem;
+        }
+        
+        .refresh-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        <h1>🔧 Backend Server Status</h1>
+        
+        <div id="serverStatus">
+            <div class="status-icon status-warning">🔄</div>
+            <h2>กำลังตรวจสอบ Backend Server...</h2>
+        </div>
+        
+        <div id="serverInfo" style="display: none;">
+            <div class="command-box">
+                <p><strong>คำสั่งเริ่ม Backend:</strong></p>
+                <code>cd backend && npm start</code>
+            </div>
+            
+            <div class="steps">
+                <h3>📋 ขั้นตอนเริ่ม Backend:</h3>
+                
+                <div class="step">
+                    <span class="step-number">1.</span>
+                    เปิด Terminal หรือ Command Prompt
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2.</span>
+                    ไปที่โฟลเดอร์ backend:
+                    <div class="command-box">cd backend</div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3.</span>
+                    ติดตั้ง dependencies (ถ้ายังไม่ได้ทำ):
+                    <div class="command-box">npm install</div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4.</span>
+                    เริ่ม backend server:
+                    <div class="command-box">npm start</div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">5.</span>
+                    ตรวจสอบว่า server ทำงานที่ port 3000
+                </div>
+            </div>
+            
+            <div class="command-box">
+                <p><strong>ตรวจสอบ Status:</strong></p>
+                <code>curl http://localhost:3000/health</code>
+            </div>
+        </div>
+        
+        <button class="refresh-button" onclick="checkServerStatus()">
+            🔄 ตรวจสอบอีกครั้ง
+        </button>
+        
+        <button class="refresh-button" onclick="window.close()">
+            ❌ ปิดหน้าต่าง
+        </button>
+    </div>
+
+    <script>
+        async function checkServerStatus() {
+            const statusDiv = document.getElementById('serverStatus');
+            const infoDiv = document.getElementById('serverInfo');
+            
+            statusDiv.innerHTML = `
+                <div class="status-icon status-warning">🔄</div>
+                <h2>กำลังตรวจสอบ Backend Server...</h2>
+            `;
+            
+            try {
+                const response = await fetch('http://localhost:3000/health');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `
+                        <div class="status-icon status-success">✅</div>
+                        <h2>Backend Server ทำงาน!</h2>
+                        <p>Status: ${data.status}</p>
+                        <p>Server: ${data.timestamp}</p>
+                    `;
+                    infoDiv.style.display = 'none';
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status-icon status-error">❌</div>
+                    <h2>Backend Server ไม่ทำงาน!</h2>
+                    <p>Error: ${error.message}</p>
+                `;
+                infoDiv.style.display = 'block';
+            }
+        }
+
+        // Auto-check on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkServerStatus, 1000);
+        });
+
+        console.log('🔧 Backend Server Status loaded');
+    </script>
+</body>
+</html>

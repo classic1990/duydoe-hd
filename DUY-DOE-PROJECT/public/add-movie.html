@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มหนังใหม่ - DUY-DOE FILM</title>
+    <meta name="description" content="เพิ่มหนังใหม่ลงในระบบ DUY-DOE FILM">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/style-unified.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#e50914">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/assets/js/core/firebase-config.js" as="script">
+    <link rel="preload" href="/assets/js/add-movie.js" as="script">
+</head>
+
+<body class="add-movie-page">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>กำลังโหลด...</p>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="logo">
+                <i class="fas fa-film"></i>
+                DUY-DOE FILM
+            </a>
+
+            <nav class="nav-menu">
+                <a href="/" class="nav-link">หน้าแรก</a>
+                <a href="/movies" class="nav-link">หนัง</a>
+                <a href="/series" class="nav-link">ซีรีส์</a>
+                <a href="/my-list" class="nav-link">รายการของฉัน</a>
+            </nav>
+
+            <div class="nav-actions">
+                <div class="user-menu">
+                    <button class="auth-btn">เข้าสู่ระบบ</button>
+                    <div class="user-profile" style="display: none;">
+                        <img src="/img/default-avatar.png" alt="User" class="user-avatar">
+                        <span class="user-name"></span>
+                        <button class="logout-btn" title="ออกจากระบบ">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="add-movie-container">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="breadcrumb">
+                    <a href="/">หน้าแรก</a>
+                    <span class="separator">/</span>
+                    <span class="current">เพิ่มหนังใหม่</span>
+                </div>
+                <h1 class="page-title">เพิ่มหนังใหม่</h1>
+                <p class="page-subtitle">กรอกข้อมูลหนังเพื่อเพิ่มลงในระบบ</p>
+            </div>
+
+            <!-- Add Movie Form -->
+            <div class="add-movie-form-container">
+                <form id="addMovieForm" class="add-movie-form">
+                    <!-- Basic Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            ข้อมูลพื้นฐาน
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="title">ชื่อหนัง *</label>
+                                <input type="text" class="form-input" id="title" name="title" required placeholder="กรอกชื่อหนัง">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="year">ปีที่ฉาย *</label>
+                                <input type="number" class="form-input" id="year" name="year" required min="1900" max="2030" placeholder="2024">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="category">หมวดหมู่ *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">เลือกหมวดหมู่</option>
+                                    <option value="action">แอคชัน</option>
+                                    <option value="adventure">ผจญภัย</option>
+                                    <option value="animation">อนิเมชัน</option>
+                                    <option value="comedy">ตลก</option>
+                                    <option value="crime">อาชญากรรม</option>
+                                    <option value="documentary">สารคดี</option>
+                                    <option value="drama">ดราม่า</option>
+                                    <option value="family">ครอบครัว</option>
+                                    <option value="fantasy">แฟนตาซี</option>
+                                    <option value="horror">สยองขวัญ</option>
+                                    <option value="mystery">ลึกลับ</option>
+                                    <option value="romance">โรแมนติก</option>
+                                    <option value="sci-fi">ไซไฟ</option>
+                                    <option value="thriller">ระทึกขวัญ</option>
+                                    <option value="war">สงคราม</option>
+                                    <option value="western">คาวบอย</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="type">ประเภท *</label>
+                                <select class="form-select" id="type" name="type" required>
+                                    <option value="">เลือกประเภท</option>
+                                    <option value="movie">หนัง</option>
+                                    <option value="series">ซีรีส์</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="description">คำอธิบาย</label>
+                            <textarea class="form-textarea" id="description" name="description" rows="4" placeholder="กรอกคำอธิบายหนัง..."></textarea>
+                            <div class="char-count">
+                                <span id="descCharCount">0</span> / 2000 ตัวอักษร
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="duration">ระยะเวลา (นาที)</label>
+                                <input type="number" class="form-input" id="duration" name="duration" min="1" placeholder="120">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="language">ภาษา</label>
+                                <select class="form-select" id="language" name="language">
+                                    <option value="ไทย">ไทย</option>
+                                    <option value="อังกฤษ">อังกฤษ</option>
+                                    <option value="จีน">จีน</option>
+                                    <option value="เกาหลี">เกาหลี</option>
+                                    <option value="ญี่ปุ่น">ญี่ปุ่น</option>
+                                    <option value="อื่นๆ">อื่นๆ</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Information -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-photo-video"></i>
+                            ข้อมูลสื่อ
+                        </h2>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="posterUrl">URL โปสเตอร์ *</label>
+                            <div class="url-input-group">
+                                <input type="url" class="form-input" id="posterUrl" name="posterUrl" required placeholder="https://example.com/poster.jpg">
+                                <button type="button" class="btn-secondary" id="previewPosterBtn">
+                                    <i class="fas fa-eye"></i>
+                                    ดูตัวอย่าง
+                                </button>
+                            </div>
+                            <div class="poster-preview" id="posterPreview">
+                                <img src="" alt="Poster Preview" id="posterPreviewImg" style="display: none;">
+                                <div class="preview-placeholder">
+                                    <i class="fas fa-image"></i>
+                                    <span>ตัวอย่างโปสเตอร์จะปรากฏที่นี่</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="videoUrl">URL วิดีโอ</label>
+                            <div class="url-input-group">
+                                <input type="url" class="form-input" id="videoUrl" name="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+                                <button type="button" class="btn-secondary" id="validateVideoBtn">
+                                    <i class="fas fa-check-circle"></i>
+                                    ตรวจสอบ
+                                </button>
+                            </div>
+                            <div class="video-info" id="videoInfo">
+                                <div class="info-placeholder">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>ข้อมูลวิดีโอจะปรากฏที่นี่หลังตรวจสอบ</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="trailerUrl">URL ตัวอย่าง (Trailer)</label>
+                            <div class="url-input-group">
+                                <input type="url" class="form-input" id="trailerUrl" name="trailerUrl" placeholder="https://www.youtube.com/watch?v=...">
+                                <button type="button" class="btn-secondary" id="validateTrailerBtn">
+                                    <i class="fas fa-check-circle"></i>
+                                    ตรวจสอบ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rating & Quality -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-star"></i>
+                            คะแนนและคุณภาพ
+                        </h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="rating">คะแนน (0-10)</label>
+                                <div class="rating-input-group">
+                                    <input type="number" class="form-input" id="rating" name="rating" min="0" max="10" step="0.1" placeholder="8.5">
+                                    <div class="rating-stars" id="ratingStars">
+                                        <i class="far fa-star" data-rating="1"></i>
+                                        <i class="far fa-star" data-rating="2"></i>
+                                        <i class="far fa-star" data-rating="3"></i>
+                                        <i class="far fa-star" data-rating="4"></i>
+                                        <i class="far fa-star" data-rating="5"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="quality">คุณภาพ</label>
+                                <select class="form-select" id="quality" name="quality">
+                                    <option value="HD">HD</option>
+                                    <option value="Full HD">Full HD</option>
+                                    <option value="4K">4K</option>
+                                    <option value="4K HDR">4K HDR</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="tags">แท็ก (คั่นด้วยคอมมา)</label>
+                            <input type="text" class="form-input" id="tags" name="tags" placeholder="แอคชัน, ผจญภัย, ไซไฟ">
+                            <div class="tags-preview" id="tagsPreview">
+                                <!-- Tags will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Options -->
+                    <div class="form-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-cog"></i>
+                            ตัวเลือกเพิ่มเติม
+                        </h2>
+                        
+                        <div class="checkbox-group">
+                            <label class="form-checkbox">
+                                <input type="checkbox" name="popular" id="popular">
+                                <span class="checkmark"></span>
+                                <span class="label-text">หนังยอดนิยม</span>
+                            </label>
+                            
+                            <label class="form-checkbox">
+                                <input type="checkbox" name="new" id="new">
+                                <span class="checkmark"></span>
+                                <span class="label-text">หนังใหม่</span>
+                            </label>
+                            
+                            <label class="form-checkbox">
+                                <input type="checkbox" name="featured" id="featured">
+                                <span class="checkmark"></span>
+                                <span class="label-text">แนะนำพิเศษ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i>
+                            ยกเลิก
+                        </button>
+                        <button type="button" class="btn-secondary" id="resetBtn">
+                            <i class="fas fa-redo"></i>
+                            รีเซ็ตฟอร์ม
+                        </button>
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            บันทึกหนัง
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DUY-DOE FILM</h3>
+                    <p>ดูหนังออนไลน์ 4K คุณภาพ HDR พร้อมเทคโนโลยี สุดมัน</p>
+                </div>
+                <div class="footer-section">
+                    <h4>ติดต่อ</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DUY-DOE FILM. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-analytics-compat.js"></script>
+
+    <!-- Firebase Config & App Logic -->
+    <script src="/assets/js/core/constants.js"></script>
+    <script src="/assets/js/core/utils.js"></script>
+    <script src="/assets/js/core/error-handler.js"></script>
+    <script src="/assets/js/core/security.js"></script>
+    <script src="/assets/js/core/firebase-config.js"></script>
+
+    <!-- Add Movie Script -->
+    <script src="/assets/js/add-movie.js"></script>
+</body>
+
+</html>
