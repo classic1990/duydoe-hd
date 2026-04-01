@@ -173,8 +173,9 @@ coverage/
 config.local.js
 config.local.json
 
-# Firebase
-firebase-debug.log
+# Firebase config with real API keys
+public/assets/js/core/firebase-config.js
+firebase-config.js
 .firebase-debug.log
 
 # Deployment
