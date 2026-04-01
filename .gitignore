@@ -178,6 +178,14 @@ public/assets/js/core/firebase-config.js
 firebase-config.js
 .firebase-debug.log
 
+# PowerShell helper scripts (local use only)
+analyze-project.ps1
+cleanup-project.ps1
+setup-github.ps1
+
+# Duplicate README (use README.md instead)
+README
+
 # Deployment
 .vercel
 .netlify
